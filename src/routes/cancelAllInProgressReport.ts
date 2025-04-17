@@ -25,7 +25,7 @@ app.get('/reports/cancelAllInProgress', async (req, res) => {
     }
 
     for (const report of data) {
-        if (report.status !== 'new' && report.status !== 'taken') {
+        if (report.status !== 'taken') {
             continue
         }
 

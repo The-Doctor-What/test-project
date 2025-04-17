@@ -30,7 +30,7 @@ app.get('/reports', async (req, res) => {
         result(data, error);
     }
 
-    const isValidDate = (_date): boolean => {
+    const isValidDate = (_date:any): boolean => {
         return !isNaN(Date.parse(_date));
     };
 

@@ -1,5 +1,5 @@
 import app from "../server";
-import {supabase} from "../database";
+import {getReportById, supabase} from "../database";
 
 app.get('/reports/take', async (req, res) => {
     const { id} = req.query;
@@ -9,22 +9,8 @@ app.get('/reports/take', async (req, res) => {
         return
     }
 
-    const {data, error} = await supabase
-        .from('reports')
-        .select('*')
-        .eq('id', id)
-        .single();
-
-    if (error) {
-        console.error(`Logs » Failed to get report with id ${id}`, error);
-        res.status(400).send(JSON.stringify({error: 'Error getting report'}));
-        return
-    }
-
-    if (!data) {
-        res.status(404).send(JSON.stringify({error: 'Report not found'}));
-        return
-    }
+    const data = await getReportById(id, res);
+    if (!data) return
 
     if (data.status !== 'new') {
         res.status(400).send(JSON.stringify({error: 'Report is not pending'}));
@@ -37,8 +23,7 @@ app.get('/reports/take', async (req, res) => {
         .eq('id', id);
 
     if (updateError) {
-        console.error(`Logs » Failed to update report with id ${id}`);
-        console.error(updateError);
+        console.error(`Logs » Failed to update report with id ${id}`, updateError);
         res.status(400).send(JSON.stringify({error: 'Error updating report'}));
         return
     }
